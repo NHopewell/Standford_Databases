@@ -138,7 +138,15 @@ Q12. For each director, return the director's name together with the title(s) of
 the movie(s) they directed that received the highest rating among all of their movies, 
 and the value of that rating. Ignore movies whose director is NULL.
 */
-
+WITH cte AS (
+	SELECT director, title, stars,
+		row_number() OVER(partition by director ORDER BY director, stars desc) as row_num
+	FROM Rating JOIN Movie using(mID)
+	WHERE director is not null
+)
+SELECT director, title, stars
+FROM cte
+WHERE row_num = 1;
 
 
 
